@@ -13,6 +13,8 @@
 // react-router-dom 6.x 방식
 import { createBrowserRouter } from "react-router-dom";
 import Root from "./components/Root";
+import Home from "./routes/Home";
+import Users from "./routes/Users";
 
 // createBrowserRouter는 함수
 // 이 함수를 호출하여 이 안에 라우터 배열을 둠
@@ -23,5 +25,17 @@ const router = createBrowserRouter([
     // 있으면 연결된 컴포넌트를 보여줌
     path: "/",
     element: <Root />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+      {
+        path: "users",
+        element: <Users />,
+      },
+    ],
   },
 ]);
+
+export default router;
