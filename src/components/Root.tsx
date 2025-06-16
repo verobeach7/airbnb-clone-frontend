@@ -1,5 +1,20 @@
-import { Box, Button, HStack } from "@chakra-ui/react";
-import { FaAirbnb } from "react-icons/fa";
+import {
+  Box,
+  Button,
+  CloseButton,
+  Dialog,
+  DialogBackdrop,
+  DialogBody,
+  DialogPositioner,
+  DialogTrigger,
+  HStack,
+  IconButton,
+  Input,
+  InputGroup,
+  Portal,
+  VStack,
+} from "@chakra-ui/react";
+import { FaAirbnb, FaLock, FaMoon, FaUser } from "react-icons/fa";
 import { Outlet } from "react-router-dom";
 
 export default function Root() {
@@ -18,7 +33,52 @@ export default function Root() {
         </Box>
         {/* spacing이 v3에서는 gap으로 변경됨 */}
         <HStack gap={2}>
-          <Button>Log in</Button>
+          <IconButton variant={"ghost"} aria-label="Toggle dark mode">
+            <FaMoon />
+          </IconButton>
+          <Dialog.Root size={"lg"} motionPreset={"scale"}>
+            <DialogTrigger>
+              <Button>Log in</Button>
+            </DialogTrigger>
+            <Portal>
+              <DialogBackdrop />
+              <DialogPositioner>
+                <Dialog.Content>
+                  <Dialog.Header>
+                    <Dialog.Title>Dialog Title</Dialog.Title>
+                  </Dialog.Header>
+                  <DialogBody>
+                    <VStack>
+                      <InputGroup
+                        startElement={
+                          <Box color="gray.500">
+                            <FaUser />
+                          </Box>
+                        }
+                      >
+                        <Input variant={"subtle"} placeholder="Username" />
+                      </InputGroup>
+                      <InputGroup
+                        startElement={
+                          <Box color="gray.500">
+                            <FaLock />
+                          </Box>
+                        }
+                      >
+                        <Input variant={"subtle"} placeholder="Password" />
+                      </InputGroup>
+                    </VStack>
+                    <Button mt={4} colorPalette={"red"} w={"100%"}>
+                      Log in
+                    </Button>
+                  </DialogBody>
+                  <Dialog.CloseTrigger asChild>
+                    <CloseButton size="sm" />
+                  </Dialog.CloseTrigger>
+                </Dialog.Content>
+              </DialogPositioner>
+            </Portal>
+          </Dialog.Root>
           <Button colorPalette={"red"}>Sign up</Button>
         </HStack>
       </HStack>
