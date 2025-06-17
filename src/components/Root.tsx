@@ -4,7 +4,7 @@ import Header from "./Header";
 
 export default function Root() {
   return (
-    <Box>
+    <Box px={5}>
       <Header />
       <Outlet />
     </Box>
