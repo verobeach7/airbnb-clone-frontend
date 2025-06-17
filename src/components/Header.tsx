@@ -5,6 +5,7 @@ import {
   DialogTrigger,
   HStack,
   IconButton,
+  Stack,
 } from "@chakra-ui/react";
 import { FaAirbnb, FaMoon, FaSun } from "react-icons/fa";
 import LoginModal from "./LoginModal";
@@ -32,11 +33,22 @@ export default function Header() {
   const Icon = useColorModeValue(FaSun, FaMoon);
 
   return (
-    <HStack
+    <Stack
       justifyContent={"space-between"}
+      alignItems={"center"}
       px={10}
       py={5}
+      // gap은 sm 사이즈 화면일 때만 column 배치이기 때문에 이 때만 작동함
+      // 즉, md 이상 사이즈일 때는 row 배치이므로 gap을 줄 컴포넌트가 없음
+      gap={5}
       borderBottomWidth={1}
+      // direction에 column을 줘도 작동하지 않음. 이 컴포넌트가 HStack이기 때문에 무조건 Horizontal로 작동. 항상 가로 방향으로 배치
+      // {} object를 이용하여 설정 가능. 화면 사이즈에 따라 설정
+      direction={{
+        sm: "column",
+        md: "row",
+        // md까지만 해주면 lg, xl, 2xl에서는 md가 row임을 인식하고 자동으로 row 적용시킴
+      }}
     >
       <Box color={logoColor}>
         {/* 만약 FaAirbnb에서 color 속성을 변경하려고 하면 red.500같은 자동완성이 지원되지 않음. 대신 Chakra UI의 Box 컴포넌트로 감싸고 여기에 Chakra의 자동완성을 사용하면 Child Component에 상속되어짐 */}
@@ -76,6 +88,6 @@ export default function Header() {
           <SignUpModal />
         </Dialog.Root>
       </HStack>
-    </HStack>
+    </Stack>
   );
 }

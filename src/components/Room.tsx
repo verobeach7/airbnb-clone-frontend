@@ -1,0 +1,62 @@
+import {
+  Box,
+  Button,
+  Grid,
+  HStack,
+  Image,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { FaRegHeart, FaStar } from "react-icons/fa";
+import { useColorModeValue } from "./ui/color-mode";
+
+export default function Room() {
+  const gray = useColorModeValue("gray.600", "gray.400");
+  return (
+    <VStack gap={0} alignItems={"flex-start"}>
+      {/* borderRadius를 사용해도 되지만 rounded를 사용하면 일관성있게 적용할 수 있음 */}
+      {/* 1. 두 컴포넌트를 겹치기 위해서 부모 컴포넌트의 position을 relative로 설정 */}
+      <Box position={"relative"} overflow={"hidden"} mb={2} rounded={"3xl"}>
+        <Image src="https://a0.muscache.com/im/pictures/lombard/MtTemplate-1019730-active_media/original/8c6edcf7-789c-4449-8e72-247a70892cb6.jpg?im_w=960" />
+        {/* 2. 겹치고 싶은 대상의 position을 absolute로 설정 후 위치를 조정 */}
+        {/* 클릭 가능하게 하는 방법1 */}
+        {/* <Box cursor={"pointer"} position={"absolute"} top={5} right={5} color={"white"}>
+            <FaRegHeart />
+          </Box> */}
+        {/* 클릭 가능하게 하는 방법2 */}
+        <Button
+          variant={"ghost"}
+          position={"absolute"}
+          top={2}
+          right={0}
+          color={"white"}
+        >
+          <FaRegHeart />
+        </Button>
+      </Box>
+      <Box>
+        <Grid gap={2} templateColumns={"6fr 1fr"}>
+          <Text
+            display={"block"}
+            as={"b"}
+            mb={-0.5}
+            fontSize={"md"}
+            lineClamp={1}
+          >
+            Bujeon-dong, Busanjin-gu, 한국의 공동 주택 전체
+          </Text>
+          <HStack gap={1}>
+            <FaStar size={13} />
+            <Text>5.0</Text>
+          </HStack>
+        </Grid>
+        <Text mb={2} fontSize={"sm"} color={gray}>
+          Seoul, S. Korea
+        </Text>
+        <Text fontSize={"sm"} color={gray}>
+          <Text as={"b"}>$72</Text> /night
+        </Text>
+      </Box>
+    </VStack>
+  );
+}
