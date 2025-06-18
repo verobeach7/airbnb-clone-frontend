@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import { FaRegHeart, FaStar } from "react-icons/fa";
+import { Box, Grid, Skeleton, SkeletonText } from "@chakra-ui/react";
 import Room from "../components/Room";
 
 export default function Home() {
@@ -27,16 +18,14 @@ export default function Home() {
         "2xl": "repeat(5, 1fr)",
       }}
     >
-      {/* alignItems를 이용하여 정렬할 수 있음 */}
-      {/* VStack은 더이상 spacing을 지원하지 않으므로 간격을 좁히기 위해서는 gap={0} 설정 후 좁힐 필요가 있는 컴포넌트에서 margin을 이용하여 좁혀줘야 함 */}
-      {[
-        1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 2, 1, 2, 3, 2, 3, 2, 3, 2,
-        3,
-      ].map((index) => (
-        // useColorModeValue를 사용하기 위해 별도의 파일로 분리
-        // Room 컴포넌트를 별도의 파일로 만들었기 때문에 VStack에 주었던 key를 Room 컴포넌트에 주면 됨
-        <Room key={index} />
-      ))}
+      <Box>
+        {/* Room.tsx의 Image minH을 280으로 설정하였으므로 스켈레톤의 높이를 280으로 설정하여 정사각형 모양으로 만들어주기 */}
+        <Skeleton rounded={"3xl"} mb={3} h={280} />
+        <SkeletonText mt={1} mb={3} h={3} noOfLines={1} />
+        <SkeletonText mb={3} w={"45%"} h={3} noOfLines={1} />
+        <SkeletonText mt={1} w={"30%"} h={3} noOfLines={1} />
+      </Box>
+      <Room />
     </Grid>
   );
 }
