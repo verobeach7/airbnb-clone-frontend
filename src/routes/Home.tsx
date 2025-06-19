@@ -3,6 +3,7 @@ import Room from "../components/Room";
 import RoomSkeleton from "../components/RoomSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { getRooms } from "../api";
+import { Link } from "react-router-dom";
 
 interface IPhoto {
   pk: string;
@@ -66,6 +67,8 @@ export default function Home() {
           <RoomSkeleton />
         </>
       ) : null}
+      {/* 아래 링크를 눌러 404페이지에 갔다가 뒤로 다시 돌아가도 캐싱되어 있기 때문에 로딩이 없는 것을 확인할 수 있음 */}
+      <Link to={"/asdfsdf"}>404</Link>
       {/* `?`를 붙이면 데이터가 있으면이라고 가정하게 됨 */}
       {data?.map((room) => (
         <Room
