@@ -10,7 +10,23 @@ import {
 import { FaRegHeart, FaStar } from "react-icons/fa";
 import { useColorModeValue } from "./ui/color-mode";
 
-export default function Room() {
+interface IRoomProps {
+  imageUrl: string;
+  name: string;
+  rating: number;
+  city: string;
+  country: string;
+  price: number;
+}
+
+export default function Room({
+  imageUrl,
+  name,
+  rating,
+  city,
+  country,
+  price,
+}: IRoomProps) {
   const gray = useColorModeValue("gray.600", "gray.400");
   return (
     <VStack gap={0} alignItems={"flex-start"}>
@@ -23,10 +39,7 @@ export default function Room() {
         mb={2}
         rounded={"3xl"}
       >
-        <Image
-          minH={280}
-          src="https://a0.muscache.com/im/pictures/lombard/MtTemplate-1019730-active_media/original/8c6edcf7-789c-4449-8e72-247a70892cb6.jpg?im_w=960"
-        />
+        <Image minH={280} src={imageUrl} />
         {/* 2. 겹치고 싶은 대상의 position을 absolute로 설정 후 위치를 조정 */}
         {/* 클릭 가능하게 하는 방법1 */}
         {/* <Box cursor={"pointer"} position={"absolute"} top={5} right={5} color={"white"}>
@@ -52,7 +65,7 @@ export default function Room() {
             fontSize={"md"}
             lineClamp={1}
           >
-            Bujeon-dong, Busanjin-gu, 한국의 공동 주택 전체
+            {name}
           </Text>
           {/* `_`를 이용하여 h1:hover와 같은 CSS Selector(선택자)를 사용할 수 있음 */}
           <HStack
@@ -63,14 +76,14 @@ export default function Room() {
           >
             {/* FaStar는 부모 컴포넌트인 HStack으로부터 스타일을 상속받음 */}
             <FaStar size={13} />
-            <Text>5.0</Text>
+            <Text>{rating}</Text>
           </HStack>
         </Grid>
         <Text mb={2} fontSize={"sm"} color={gray}>
-          Seoul, S. Korea
+          {city}, {country}
         </Text>
         <Text fontSize={"sm"} color={gray}>
-          <Text as={"b"}>$72</Text> /night
+          <Text as={"b"}>${price}</Text> /night
         </Text>
       </Box>
     </VStack>

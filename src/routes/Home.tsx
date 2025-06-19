@@ -1,7 +1,43 @@
-import { Box, Grid, Skeleton, SkeletonText } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 import Room from "../components/Room";
+import { useEffect, useState } from "react";
+import RoomSkeleton from "../components/RoomSkeleton";
+
+interface IPhoto {
+  pk: string;
+  file: string;
+  description: string;
+}
+
+interface IRoom {
+  pk: number;
+  name: string;
+  country: string;
+  city: string;
+  price: number;
+  rating: number;
+  is_owner: boolean;
+  // IPhoto 타입을 가진 Array
+  photos: IPhoto[];
+}
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+  // default value로 undefined 설정
+  // TypeScript는 room이 뭔지 모르므로 room에 대해 설명해줘야 함.
+  // const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState<IRoom[]>([]);
+  // 아래 방법이 React.JS에서 데이터를 fetch하는 최고의 방법은 아님
+  const fetchRooms = async () => {
+    // 반드시 url 마지막은 `/`로 끝나야 함. 없으면 CORS 에러 발생
+    const response = await fetch("http://127.0.0.1:8000/api/v1/rooms/");
+    const json = await response.json();
+    setRooms(json);
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    fetchRooms();
+  });
   // columnGap의 단위는 rem
   return (
     <Grid
@@ -18,14 +54,35 @@ export default function Home() {
         "2xl": "repeat(5, 1fr)",
       }}
     >
-      <Box>
-        {/* Room.tsx의 Image minH을 280으로 설정하였으므로 스켈레톤의 높이를 280으로 설정하여 정사각형 모양으로 만들어주기 */}
-        <Skeleton rounded={"3xl"} mb={3} h={280} />
-        <SkeletonText mt={1} mb={3} h={3} noOfLines={1} />
-        <SkeletonText mb={3} w={"45%"} h={3} noOfLines={1} />
-        <SkeletonText mt={1} w={"30%"} h={3} noOfLines={1} />
-      </Box>
-      <Room />
+      {isLoading ? (
+        <>
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+          <RoomSkeleton />
+        </>
+      ) : null}
+      {rooms.map((room) => (
+        <Room
+          imageUrl={room.photos[0].file}
+          name={room.name}
+          rating={room.rating}
+          city={room.city}
+          country={room.country}
+          price={room.price}
+        />
+      ))}
     </Grid>
   );
 }
