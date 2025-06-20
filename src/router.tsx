@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Root from "./components/Root";
 import Home from "./routes/Home";
 import NotFound from "./routes/NotFound";
+import RoomDetail from "./routes/RoomDetail";
 
 // createBrowserRouter는 함수
 // 이 함수를 호출하여 이 안에 라우터 배열을 둠
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Home />,
+      },
+      {
+        path: "rooms/:roomPk",
+        element: <RoomDetail />,
       },
     ],
   },

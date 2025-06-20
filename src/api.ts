@@ -14,3 +14,6 @@ const instance = axios.create({
 // 한 줄로 만들어 줄 수 있음
 export const getRooms = () =>
   instance.get("rooms/").then((response) => response.data);
+
+export const getRoom = () =>
+  instance.get("rooms/1").then((response) => response.data);
