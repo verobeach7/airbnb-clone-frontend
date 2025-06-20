@@ -3,30 +3,13 @@ import Room from "../components/Room";
 import RoomSkeleton from "../components/RoomSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { getRooms } from "../api";
-
-interface IPhoto {
-  pk: string;
-  file: string;
-  description: string;
-}
-
-interface IRoom {
-  pk: number;
-  name: string;
-  country: string;
-  city: string;
-  price: number;
-  rating: number;
-  is_owner: boolean;
-  // IPhoto 타입을 가진 Array
-  photos: IPhoto[];
-}
+import type { IRoomList } from "../types";
 
 export default function Home() {
   // useQuery는 key를 줘야 함. key는 무엇을 fetch한 것인지 인식하게 해주며 캐싱 작업에 사용됨.
   // tanstack Query가 isLoading, data 등 많은 것을 제공함
   // Cache는 메모리에 저장됨
-  const { isLoading, data } = useQuery<IRoom[]>({
+  const { isLoading, data } = useQuery<IRoomList[]>({
     queryKey: ["rooms"],
     queryFn: getRooms,
   });

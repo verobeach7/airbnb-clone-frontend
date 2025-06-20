@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getRoom } from "../api";
+import type { IRoomDetail } from "../types";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
-  const { isLoading, data } = useQuery({
+  const { isLoading, data } = useQuery<IRoomDetail>({
     // queryKey로 두 개의 key를 병합하여 유니크하게 만들어 줄 수 있음
     queryKey: [`rooms`, roomPk],
     queryFn: getRoom,
