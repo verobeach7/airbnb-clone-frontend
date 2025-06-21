@@ -35,15 +35,24 @@ export default function RoomDetail() {
         templateRows={"1fr 1fr"}
         templateColumns={"repeat(4, 1fr)"}
       >
-        {data?.photos.slice(0, 5).map((photo, index) => (
+        {[0, 1, 2, 3, 4].map((index) => (
           // overflow="hidden": Box 크기에서 넘치는 부분을 숨겨줌
           <GridItem
             colSpan={index === 0 ? 2 : 1}
             rowSpan={index === 0 ? 2 : 1}
             overflow={"hidden"}
-            key={photo.pk}
+            key={index}
           >
-            <Image objectFit={"cover"} w={"100%"} h={"100%"} src={photo.file} />
+            <Skeleton loading={isLoading} w={"100%"} h={"100%"}>
+              <Image
+                objectFit={"cover"}
+                w={"100%"}
+                h={"100%"}
+                // 사진이 5개 미만인 경우 photos[index]가 존재하지 않는 것이 있어 에러 발생
+                // `?`를 이용하면 있는 경우에만 file을 가져옴
+                src={data?.photos[index]?.file}
+              />
+            </Skeleton>
           </GridItem>
         ))}
       </Grid>
