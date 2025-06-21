@@ -1,15 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { getRoom } from "../api";
-import type { IRoomDetail } from "../types";
+import { getRoom, getRoomReviews } from "../api";
+import type { IReview, IRoomDetail } from "../types";
 import {
+  Avatar,
   Box,
   Grid,
   GridItem,
   Heading,
+  HStack,
   Image,
   Skeleton,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
+import { FaStar } from "react-icons/fa";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -18,10 +23,16 @@ export default function RoomDetail() {
     queryKey: [`rooms`, roomPk],
     queryFn: getRoom,
   });
+  const { isLoading: isReviewsLoading, data: reviewsData } = useQuery<
+    IReview[]
+  >({
+    queryKey: [`rooms`, roomPk, `reviews`],
+    queryFn: getRoomReviews,
+  });
   // ReactQueryDevtools 사용으로 더이상 Query로 받아온 데이터를 console.log()로 확인할 필요 없음.
   // console.log(data);
   return (
-    <Box mt={6} px={10}>
+    <Box mt={6} px={60}>
       <Skeleton height={"30px"} width={"25%"} loading={isLoading}>
         <Heading>{data?.name}</Heading>
       </Skeleton>
@@ -56,6 +67,43 @@ export default function RoomDetail() {
           </GridItem>
         ))}
       </Grid>
+      <HStack w={"50%"} justifyContent={"space-between"} mt={18}>
+        <VStack alignItems={"flex-start"}>
+          <Skeleton loading={isLoading}>
+            <Heading fontSize={"2xl"}>
+              House hosted by {data?.owner.name}
+            </Heading>
+          </Skeleton>
+          <Skeleton loading={isLoading}>
+            {/* 앞부터 채우기 위해서 flex-start 이용, 단 너비를 지정해줘야 적용됨을 잊지 말기 */}
+            <HStack justifyContent={"flex-start"} w={"100%"}>
+              <Text>
+                {data?.toilets} toilet{data?.toilets === 1 ? "" : "s"}
+              </Text>
+              <Text>•</Text>
+              <Text>
+                {data?.rooms} room{data?.rooms === 1 ? "" : "s"}
+              </Text>
+            </HStack>
+          </Skeleton>
+        </VStack>
+        <Avatar.Root size={"2xl"}>
+          <Avatar.Fallback name={data?.owner.name} />
+          <Avatar.Image src={data?.owner.avatar} />
+        </Avatar.Root>
+      </HStack>
+      <Box mt={10}>
+        <Heading fontSize={"2xl"}>
+          <HStack>
+            <FaStar />
+            <Text>{data?.rating}</Text>
+            <Text>•</Text>
+            <Text>
+              {reviewsData?.length} review{reviewsData?.length === 1 ? "" : "s"}
+            </Text>
+          </HStack>
+        </Heading>
+      </Box>
     </Box>
   );
 }
