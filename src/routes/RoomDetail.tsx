@@ -5,12 +5,14 @@ import type { IReview, IRoomDetail } from "../types";
 import {
   Avatar,
   Box,
+  Container,
   Grid,
   GridItem,
   Heading,
   HStack,
   Image,
   Skeleton,
+  SkeletonCircle,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -93,16 +95,52 @@ export default function RoomDetail() {
         </Avatar.Root>
       </HStack>
       <Box mt={10}>
-        <Heading fontSize={"2xl"}>
-          <HStack>
-            <FaStar />
-            <Text>{data?.rating}</Text>
-            <Text>•</Text>
-            <Text>
-              {reviewsData?.length} review{reviewsData?.length === 1 ? "" : "s"}
-            </Text>
-          </HStack>
-        </Heading>
+        <Skeleton w={"50%"} loading={isLoading}>
+          <Heading mb={5} fontSize={"2xl"}>
+            <HStack fontSize={"2xl"}>
+              <FaStar />
+              <Text>{data?.rating}</Text>
+              <Text>•</Text>
+              <Text>
+                {reviewsData?.length} review
+                {reviewsData?.length === 1 ? "" : "s"}
+              </Text>
+            </HStack>
+          </Heading>
+        </Skeleton>
+        {/* Container에 넣으면 기본으로 중앙 정렬됨 */}
+        <Container mt={8} maxW={"5xl"} marginX={"unset"}>
+          <Grid gap={8} templateColumns={"1fr 1fr"}>
+            {reviewsData?.map((review, index) => (
+              <VStack alignItems={"flex-start"} key={index}>
+                <HStack>
+                  <SkeletonCircle loading={isLoading}>
+                    <Avatar.Root size={"md"}>
+                      <Avatar.Fallback name={review.user.name} />
+                      <Avatar.Image src={review.user.avatar} />
+                    </Avatar.Root>
+                  </SkeletonCircle>
+                  <VStack gap={0} alignItems={"flex-start"}>
+                    <Skeleton loading={isLoading}>
+                      <Box>
+                        <Heading fontSize={"md"}>{review.user.name}</Heading>
+                      </Box>
+                    </Skeleton>
+                    <Skeleton loading={isLoading}>
+                      <HStack>
+                        <FaStar size={"12px"} />
+                        <Text>{review.rating}</Text>
+                      </HStack>
+                    </Skeleton>
+                  </VStack>
+                </HStack>
+                <Skeleton h={4} loading={isLoading}>
+                  <Text>{review.payload}</Text>
+                </Skeleton>
+              </VStack>
+            ))}
+          </Grid>
+        </Container>
       </Box>
     </Box>
   );
