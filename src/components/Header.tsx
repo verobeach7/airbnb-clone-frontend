@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   Dialog,
@@ -17,8 +18,10 @@ import {
   useColorMode,
   useColorModeValue,
 } from "./ui/color-mode";
+import useUser from "../lib/useUser";
 
 export default function Header() {
+  const { userLoading, isLoggedIn, user } = useUser();
   // ColorModeButton을 사용하지 않고 useColorMode 훅을 사용할 수도 있음
   // 더 자유도 높게 다크모드를 설정 가능하게 코딩할 수 있음
   const { toggleColorMode } = useColorMode();
@@ -66,27 +69,38 @@ export default function Header() {
           {/* useColorModeValue를 이용하여 Icon 컴포넌트를 만들어 줌으로써 더이상 if-else를 이용할 필요가 없음 */}
           <Icon />
         </IconButton>
-        <Dialog.Root size={"lg"} motionPreset={"scale"}>
-          <DialogTrigger asChild>
-            {/* DarkMode 안에 넣어주면 DarkMode를 강제함 */}
-            <DarkMode>
-              <Button>Log in</Button>
-            </DarkMode>
-          </DialogTrigger>
-          <LoginModal />
-        </Dialog.Root>
-        <Dialog.Root size={"lg"} motionPreset={"scale"}>
-          <DialogTrigger asChild>
-            {/* LightMode나 DarkMode 안에 넣어줘도 Button 컴포넌트의 속성이 나중에 반영되기 때문에 강제되지 않음 */}
-            {/* <Button bg={bg} color={color} colorPalette={"red"}>
+        {!userLoading ? (
+          !isLoggedIn ? (
+            <>
+              <Dialog.Root size={"lg"} motionPreset={"scale"}>
+                <DialogTrigger asChild>
+                  {/* DarkMode 안에 넣어주면 DarkMode를 강제함 */}
+                  <DarkMode>
+                    <Button>Log in</Button>
+                  </DarkMode>
+                </DialogTrigger>
+                <LoginModal />
+              </Dialog.Root>
+              <Dialog.Root size={"lg"} motionPreset={"scale"}>
+                <DialogTrigger asChild>
+                  {/* LightMode나 DarkMode 안에 넣어줘도 Button 컴포넌트의 속성이 나중에 반영되기 때문에 강제되지 않음 */}
+                  {/* <Button bg={bg} color={color} colorPalette={"red"}>
               Sign up
             </Button> */}
-            <LightMode>
-              <Button colorPalette={"red"}>Sign up</Button>
-            </LightMode>
-          </DialogTrigger>
-          <SignUpModal />
-        </Dialog.Root>
+                  <LightMode>
+                    <Button colorPalette={"red"}>Sign up</Button>
+                  </LightMode>
+                </DialogTrigger>
+                <SignUpModal />
+              </Dialog.Root>
+            </>
+          ) : (
+            <Avatar.Root size={"md"}>
+              <Avatar.Fallback />
+              <Avatar.Image />
+            </Avatar.Root>
+          )
+        ) : null}
       </HStack>
     </Stack>
   );
