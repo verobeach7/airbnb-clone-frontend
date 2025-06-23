@@ -96,8 +96,8 @@ export default function Header() {
             </>
           ) : (
             <Avatar.Root size={"md"}>
-              <Avatar.Fallback />
-              <Avatar.Image />
+              <Avatar.Fallback name={user?.name} />
+              <Avatar.Image src={user?.avatar} />
             </Avatar.Root>
           )
         ) : null}
