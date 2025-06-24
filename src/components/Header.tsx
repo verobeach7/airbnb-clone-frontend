@@ -23,6 +23,7 @@ import {
 import useUser from "../lib/useUser";
 import { logOut } from "../api";
 import { Toaster, toaster } from "./ui/toaster";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Header() {
   const { userLoading, isLoggedIn, user } = useUser();
@@ -39,12 +40,18 @@ export default function Header() {
   // Icon은 컴포넌트로써 사용될 것이기 때문에 반드시 대문자로 시작해야 함!!!
   const Icon = useColorModeValue(FaSun, FaMoon);
 
+  // main.tsx에서 호출하여 현재 사용 중에 있는 QueryClient를 가져옴
+  const queryClient = useQueryClient();
+
   const onLogOut = async () => {
-    // const data = await logOut();
-    // console.log(data);
-    const promise = new Promise<void>((resolve) => {
-      setTimeout(() => resolve(), 5000);
-    });
+    const promise = async () => {
+      await logOut();
+      // Re-fetch가 필요한 Query의 key를 넣어주면 해당 Query를 Re-fetch함
+      // "me" query를 re-fetch하면 useUser()의 값이 바뀌게 되고 이에 따라 보여줘야 할 컴포넌트도 바뀌게 됨
+      queryClient.refetchQueries({
+        queryKey: ["me"],
+      });
+    };
     toaster.promise(promise, {
       success: {
         title: "Good bye!",

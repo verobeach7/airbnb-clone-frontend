@@ -1,3 +1,4 @@
+import Cookie from "js-cookie";
 import type { QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -44,4 +45,11 @@ export const getMe = () =>
   instance.get(`users/me`).then((response) => response.data);
 
 export const logOut = () =>
-  instance.post(`users/log-out`).then((response) => response.data);
+  instance
+    .post(`users/log-out`, null, {
+      headers: {
+        // Django로부터 받은 Cookie에 csrftoken이 없을 수도 있으므로 `|| ""` 설정
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);
