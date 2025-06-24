@@ -6,6 +6,8 @@ import {
   DialogTrigger,
   HStack,
   IconButton,
+  Menu,
+  Portal,
   Stack,
 } from "@chakra-ui/react";
 import { FaAirbnb, FaMoon, FaSun } from "react-icons/fa";
@@ -19,6 +21,8 @@ import {
   useColorModeValue,
 } from "./ui/color-mode";
 import useUser from "../lib/useUser";
+import { logOut } from "../api";
+import { Toaster, toaster } from "./ui/toaster";
 
 export default function Header() {
   const { userLoading, isLoggedIn, user } = useUser();
@@ -34,6 +38,29 @@ export default function Header() {
 
   // Icon은 컴포넌트로써 사용될 것이기 때문에 반드시 대문자로 시작해야 함!!!
   const Icon = useColorModeValue(FaSun, FaMoon);
+
+  const onLogOut = async () => {
+    // const data = await logOut();
+    // console.log(data);
+    const promise = new Promise<void>((resolve) => {
+      setTimeout(() => resolve(), 5000);
+    });
+    toaster.promise(promise, {
+      success: {
+        title: "Good bye!",
+        description: "See you later!",
+        duration: 3000,
+      },
+      error: {
+        title: "Log out failed",
+        description: "Something wrong with the log out",
+      },
+      loading: {
+        title: "Loging out...",
+        description: "Sad to see you go...",
+      },
+    });
+  };
 
   return (
     <Stack
@@ -95,13 +122,29 @@ export default function Header() {
               </Dialog.Root>
             </>
           ) : (
-            <Avatar.Root size={"md"}>
-              <Avatar.Fallback name={user?.name} />
-              <Avatar.Image src={user?.avatar} />
-            </Avatar.Root>
+            <Menu.Root>
+              <Menu.Trigger asChild>
+                <Box>
+                  <Avatar.Root size={"md"}>
+                    <Avatar.Fallback name={user?.name} />
+                    <Avatar.Image src={user?.avatar} />
+                  </Avatar.Root>
+                </Box>
+              </Menu.Trigger>
+              <Portal>
+                <Menu.Positioner>
+                  <Menu.Content>
+                    <Menu.Item onClick={onLogOut} value="log-out">
+                      Log Out
+                    </Menu.Item>
+                  </Menu.Content>
+                </Menu.Positioner>
+              </Portal>
+            </Menu.Root>
           )
         ) : null}
       </HStack>
+      <Toaster />
     </Stack>
   );
 }
