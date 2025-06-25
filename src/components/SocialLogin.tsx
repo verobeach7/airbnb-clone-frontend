@@ -19,9 +19,13 @@ export default function SocialLogin() {
         <Separator flex="1" />
       </HStack>
       <VStack>
-        <Button w={"100%"} colorPalette={"blue"}>
-          <FaGithub />
-          Continue with Github
+        {/* as를 이용하여 다른 Tag로 작동하도록 할 수 있음 */}
+        {/* anchor로 변경해줬기 때문에 href 이용가능 */}
+        <Button asChild w={"100%"} colorPalette={"blue"}>
+          <a href="https://github.com/login/oauth/authorize?client_id=Ov23liRvQnZqj0Iril2U&scope=read:user,user:email">
+            <FaGithub />
+            Continue with Github
+          </a>
         </Button>
         <Button w={"100%"} colorPalette={"yellow"}>
           <FaComment />
