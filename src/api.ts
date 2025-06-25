@@ -53,3 +53,19 @@ export const logOut = () =>
       },
     })
     .then((response) => response.data);
+
+// Django(Backend로 Github로부터 받은 code를 보내는 API)
+export const githubLogIn = (code: string) =>
+  instance
+    .post(
+      `/users/github`,
+      { code },
+      // 프론트엔드에서 백엔드로 보낼 때 헤더에 CSRF Token을 넣어서 보내야 보안 통과 가능
+      {
+        headers: {
+          // Django로부터 받은 Cookie에 csrftoken이 없을 수도 있으므로 `|| ""` 설정
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.status);
