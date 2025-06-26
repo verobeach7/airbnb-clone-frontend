@@ -36,6 +36,7 @@ export default function NotFound() {
           type: "success",
         });
         // 로그인에 성공한 후 아바타를 보여주기 위한 것
+        // me Query는 Header의 useUser Hook에서 사용되기 때문에 Header를 갱신하게 됨
         queryClient.refetchQueries({
           queryKey: ["me"],
         });
