@@ -2,6 +2,13 @@ import { Box, Button, HStack, Separator, Text, VStack } from "@chakra-ui/react";
 import { FaComment, FaGithub } from "react-icons/fa";
 
 export default function SocialLogin() {
+  // 전체 URL이 너무 길 때는 객체를 생성하여 활용하면 헷갈리지 않고 좋음
+  const kakaoParams = {
+    client_id: "a4e1b24eef7b898ce0cb1c33edfa353f",
+    redirect_uri: "http://127.0.0.1:5173/social/kakao",
+    response_type: "code",
+  };
+  const params = new URLSearchParams(kakaoParams).toString();
   return (
     <Box>
       <HStack my={8}>
@@ -27,9 +34,11 @@ export default function SocialLogin() {
             Continue with Github
           </a>
         </Button>
-        <Button w={"100%"} colorPalette={"yellow"}>
-          <FaComment />
-          Continue with Kakao
+        <Button asChild w={"100%"} colorPalette={"yellow"}>
+          <a href={`https://kauth.kakao.com/oauth/authorize?${params}`}>
+            <FaComment />
+            Continue with Kakao
+          </a>
         </Button>
       </VStack>
     </Box>

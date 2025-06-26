@@ -5,7 +5,7 @@ import { githubLogIn } from "../api";
 import { toaster } from "../components/ui/toaster";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function NotFound() {
+export default function GithubConfirm() {
   // const location = useLocation();
   // console.log(location);
   // hash: ""
