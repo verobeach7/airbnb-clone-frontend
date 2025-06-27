@@ -30,12 +30,13 @@ export const getRooms = () =>
 export const getRoom = ({ queryKey }: QueryFunctionContext) => {
   // 필요 없는 데이터는 `_`를 이용하여 무시 할 수 있음
   // queryKey Array에 담긴 데이터 중 두번째 것만 필요
-  const [_, roomPk] = queryKey;
+  const [, roomPk] = queryKey;
   return instance.get(`rooms/${roomPk}`).then((response) => response.data);
 };
 
 export const getRoomReviews = ({ queryKey }: QueryFunctionContext) => {
-  const [_, roomPk] = queryKey;
+  // `_`로 자리 표시를 하는 경우 eslint 에러 발생. 아예 생략해버릴 수 있음.
+  const [, roomPk] = queryKey;
   return instance
     .get(`rooms/${roomPk}/reviews`)
     .then((response) => response.data);
@@ -84,3 +85,35 @@ export const kakaoLogIn = (code: string) =>
       }
     )
     .then((response) => response.status);
+
+// LoginModal.tsx에서 사용하기 위해 export
+
+export interface IUsernameLoginVariables {
+  username: string;
+  password: string;
+}
+
+export interface IUsernameLoginSuccess {
+  ok: string;
+}
+export interface IUsernameLoginError {
+  error: string;
+}
+
+export const usernameLogIn = ({
+  username,
+  password,
+}: IUsernameLoginVariables) =>
+  instance
+    .post(
+      `/users/log-in`,
+      { username, password },
+      // 프론트엔드에서 백엔드로 보낼 때 헤더에 CSRF Token을 넣어서 보내야 보안 통과 가능
+      {
+        headers: {
+          // Django로부터 받은 Cookie에 csrftoken이 없을 수도 있으므로 `|| ""` 설정
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);

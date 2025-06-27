@@ -15,6 +15,15 @@ import {
 } from "@chakra-ui/react";
 import { FaLock, FaUser } from "react-icons/fa";
 import SocialLogin from "./SocialLogin";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  usernameLogIn,
+  type IUsernameLoginSuccess,
+  type IUsernameLoginError,
+  type IUsernameLoginVariables,
+} from "../api";
+import { toaster } from "./ui/toaster";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface IForm {
   username: string;
@@ -27,8 +36,41 @@ export default function LoginModal() {
     handleSubmit,
     formState: { errors },
   } = useForm<IForm>();
-  const onSubmit = (data: IForm) => {
-    console.log(data);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  // useMutation()에 4개의 Generic Type이 존재
+  // 첫 번째 - TData: mutation이 리턴할 data
+  // 두 번째 - TError: mutation에 에러가 있을 때 리턴하는 에러
+  // 세 번째 - TVariables: API에 전달할 변수들
+  // 네 번째 - TContext: mutation 중간에 공유할 임시 컨텍스트(선택사항)
+  const mutation = useMutation<
+    IUsernameLoginSuccess,
+    IUsernameLoginError,
+    IUsernameLoginVariables
+  >({
+    mutationFn: usernameLogIn,
+    // mutation 시작 할 대 호출되는 함수
+    onMutate: () => {
+      console.log("mutation starting");
+    },
+    // mutation 성공 시 호출되는 함수
+    onSuccess: () => {
+      toaster.create({
+        title: "Welcome back!",
+        type: "success",
+      });
+      queryClient.refetchQueries({
+        queryKey: ["me"],
+      });
+      navigate("/");
+    },
+    // mutation 중 에러 발생 시 호출되는 함수
+    onError: (error) => {
+      console.log(`mutation has an error:${error}`);
+    },
+  });
+  const onSubmit = ({ username, password }: IForm) => {
+    mutation.mutate({ username, password });
   };
   console.log(errors);
   return (
@@ -86,7 +128,14 @@ export default function LoginModal() {
             {/* Button의 type을 submit으로 변경해줘야 브라우저가 기본으로 가지고 있는 submit 동작을 하게 됨 */}
             {/* submit이 정상적으로 동작한다면 이 버튼을 클릭하면 페이지가 완전히 새로고침 됨 */}
             {/* 새로고침이 되지 않고 form만 제출되게 하기 위해서는 별도의 함수를 작성하여 사용해야 함 */}
-            <Button type="submit" mt={4} colorPalette={"red"} w={"100%"}>
+            <Button
+              // isLoading이 isPending으로 대체됨
+              loading={mutation.isPending}
+              type="submit"
+              mt={4}
+              colorPalette={"red"}
+              w={"100%"}
+            >
               Log in
             </Button>
             <SocialLogin />
