@@ -56,7 +56,7 @@ export const logOut = () =>
     .then((response) => response.data);
 
 // Django(Backend로 Github로부터 받은 code를 보내는 API)
-export const githubLogIn = (code: string) =>
+export const githubLogIn = ({ code }: { code: string }) =>
   instance
     .post(
       `/users/github`,
@@ -71,7 +71,7 @@ export const githubLogIn = (code: string) =>
     )
     .then((response) => response.status);
 
-export const kakaoLogIn = (code: string) =>
+export const kakaoLogIn = ({ code }: { code: string }) =>
   instance
     .post(
       `/users/kakao`,

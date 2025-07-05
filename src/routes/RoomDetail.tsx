@@ -95,7 +95,7 @@ export default function RoomDetail() {
         </Avatar.Root>
       </HStack>
       <Box mt={10}>
-        <Skeleton w={"50%"} loading={isLoading}>
+        <Skeleton w={"50%"} loading={isReviewsLoading}>
           <Heading mb={5} fontSize={"2xl"}>
             <HStack fontSize={"2xl"}>
               <FaStar />
@@ -114,19 +114,19 @@ export default function RoomDetail() {
             {reviewsData?.map((review, index) => (
               <VStack alignItems={"flex-start"} key={index}>
                 <HStack>
-                  <SkeletonCircle loading={isLoading}>
+                  <SkeletonCircle loading={isReviewsLoading}>
                     <Avatar.Root size={"md"}>
                       <Avatar.Fallback name={review.user.name} />
                       <Avatar.Image src={review.user.avatar} />
                     </Avatar.Root>
                   </SkeletonCircle>
                   <VStack gap={0} alignItems={"flex-start"}>
-                    <Skeleton loading={isLoading}>
+                    <Skeleton loading={isReviewsLoading}>
                       <Box>
                         <Heading fontSize={"md"}>{review.user.name}</Heading>
                       </Box>
                     </Skeleton>
-                    <Skeleton loading={isLoading}>
+                    <Skeleton loading={isReviewsLoading}>
                       <HStack>
                         <FaStar size={"12px"} />
                         <Text>{review.rating}</Text>
@@ -134,7 +134,7 @@ export default function RoomDetail() {
                     </Skeleton>
                   </VStack>
                 </HStack>
-                <Skeleton h={4} loading={isLoading}>
+                <Skeleton h={4} loading={isReviewsLoading}>
                   <Text>{review.payload}</Text>
                 </Skeleton>
               </VStack>

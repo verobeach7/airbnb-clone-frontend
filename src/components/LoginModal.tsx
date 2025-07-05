@@ -23,7 +23,7 @@ import {
   type IUsernameLoginVariables,
 } from "../api";
 import { toaster } from "./ui/toaster";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface IForm {
   username: string;
