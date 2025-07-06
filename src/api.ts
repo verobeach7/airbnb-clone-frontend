@@ -1,6 +1,7 @@
 import Cookie from "js-cookie";
 import type { QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
+import type { ISignUpVariables, IUsernameLoginVariables } from "./types";
 
 // Axios의 instance 생성 기능을 이용해 편리하게 이용할 수 있으며 오타로 인한 에러 발생 가능성도 줄여줌
 const instance = axios.create({
@@ -86,20 +87,6 @@ export const kakaoLogIn = ({ code }: { code: string }) =>
     )
     .then((response) => response.status);
 
-// LoginModal.tsx에서 사용하기 위해 export
-
-export interface IUsernameLoginVariables {
-  username: string;
-  password: string;
-}
-
-export interface IUsernameLoginSuccess {
-  ok: string;
-}
-export interface IUsernameLoginError {
-  error: string;
-}
-
 export const usernameLogIn = ({
   username,
   password,
@@ -112,6 +99,19 @@ export const usernameLogIn = ({
       {
         headers: {
           // Django로부터 받은 Cookie에 csrftoken이 없을 수도 있으므로 `|| ""` 설정
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);
+
+export const signUp = ({ username, password, name, email }: ISignUpVariables) =>
+  instance
+    .post(
+      `/users/sign-up`,
+      { username, password, name, email },
+      {
+        headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",
         },
       }

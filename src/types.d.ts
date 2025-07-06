@@ -63,3 +63,30 @@ export interface IUser {
   language: string;
   currency: string;
 }
+
+export interface IUsernameLoginVariables {
+  username: string;
+  password: string;
+}
+
+export interface IUsernameLoginSuccess {
+  ok: string;
+}
+export interface IUsernameLoginError {
+  error: string;
+}
+
+export interface ISignUpSuccess {
+  success: string;
+}
+
+// export interface ISignUpError {
+//   error: string;
+// }
+
+export interface ISignUpVariables {
+  username: string;
+  password: string;
+  name: string;
+  email: string;
+}

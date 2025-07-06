@@ -16,14 +16,14 @@ import {
 import { FaLock, FaUser } from "react-icons/fa";
 import SocialLogin from "./SocialLogin";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  usernameLogIn,
-  type IUsernameLoginSuccess,
-  type IUsernameLoginError,
-  type IUsernameLoginVariables,
-} from "../api";
+import { usernameLogIn } from "../api";
 import { toaster } from "./ui/toaster";
 import { useNavigate } from "react-router-dom";
+import type {
+  IUsernameLoginError,
+  IUsernameLoginSuccess,
+  IUsernameLoginVariables,
+} from "../types";
 
 interface IForm {
   username: string;
@@ -57,6 +57,7 @@ export default function LoginModal() {
     onSuccess: () => {
       toaster.create({
         title: "Welcome back!",
+        description: "Happy to see you again",
         type: "success",
       });
       queryClient.refetchQueries({
@@ -66,7 +67,7 @@ export default function LoginModal() {
     },
     // mutation 중 에러 발생 시 호출되는 함수
     onError: (error) => {
-      console.log(`mutation has an error:${error}`);
+      console.log(`Mutation has an error: ${error}`);
     },
   });
   const onSubmit = ({ username, password }: IForm) => {
