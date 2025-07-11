@@ -5,6 +5,7 @@ import NotFound from "./routes/NotFound";
 import RoomDetail from "./routes/RoomDetail";
 import GithubConfirm from "./routes/GithubConfirm";
 import KakaoConfirm from "./routes/KakaoConfirm";
+import UploadRoom from "./routes/UploadRoom";
 
 // createBrowserRouter는 함수
 // 이 함수를 호출하여 이 안에 라우터 배열을 둠
@@ -20,6 +21,11 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Home />,
+      },
+      // "rooms/:roomPk"보다 위에다 두어 upload가 하나의 방(:roomPk)으로 인식하지 않도록 함
+      {
+        path: "rooms/upload",
+        element: <UploadRoom />,
       },
       {
         path: "rooms/:roomPk",

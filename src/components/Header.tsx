@@ -24,6 +24,7 @@ import useUser from "../lib/useUser";
 import { logOut } from "../api";
 import { Toaster, toaster } from "./ui/toaster";
 import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const { userLoading, isLoggedIn, user } = useUser();
@@ -141,6 +142,12 @@ export default function Header() {
               <Portal>
                 <Menu.Positioner>
                   <Menu.Content>
+                    {/* host 유저인 경우 Upload room이 보이도록 함 */}
+                    {user?.is_host ? (
+                      <Link to={"/rooms/upload"} style={{ outline: "none" }}>
+                        <Menu.Item value="upload-room">Upload room</Menu.Item>
+                      </Link>
+                    ) : null}
                     <Menu.Item onClick={onLogOut} value="log-out">
                       Log Out
                     </Menu.Item>
