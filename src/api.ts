@@ -154,3 +154,13 @@ export const uploadRoom = (variables: IUploadRoomVariables) =>
     )
     // Django(Backend)에서 방을 성공적으로 생성하고 나면 그 방을 프론트엔드로 반환해줌
     .then((response) => response.data);
+
+// getUploadURL은 백엔드에 POST 요청을 보내고 백엔드로부터 One-time Upload URL을 반환받게 됨
+export const getUploadURL = () =>
+  instance
+    .post(`medias/photos/get-url`, null, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);
