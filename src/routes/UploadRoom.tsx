@@ -34,9 +34,10 @@ import { useNavigate } from "react-router-dom";
 export default function UploadRoom() {
   // 제너릭을 설정하여 Form의 형태를 TypeScript에게 알려줘야 함
   // TypeScript에게 form의 형태를 알려줘야 register를 사용하는게 훨씬 쉬워짐
-  const { register, handleSubmit, watch, setValue } =
-    useForm<IUploadRoomVariables>({ defaultValues: { pet_friendly: false } });
-  const petFriendly = watch("pet_friendly");
+  const { register, handleSubmit } = useForm<IUploadRoomVariables>({
+    defaultValues: { pet_friendly: false },
+  });
+  // const petFriendly = watch("pet_friendly");
 
   const navigate = useNavigate();
 
@@ -67,7 +68,7 @@ export default function UploadRoom() {
   // 방법2: <ProtectedPage>처럼 컴포넌트로 만들어 하위에 children 컴포넌트를 두어 사용하는 방식
   // 방법1은 UploadRoom 전체를 허용할지 말지, 방법2는 전체에 대해서 또는 일부 컴포넌트에 대해서도 허용 여부를 선택할 수 있음
   useHostOnlyPage();
-  console.log(watch());
+  // console.log(watch());
   // // 하나의 필드만 선택하여 볼 수도 있음
   // console.log(watch("address"));
 
@@ -183,17 +184,13 @@ export default function UploadRoom() {
             {/* Root는 상태를 제어하는 컴포넌트 */}
 
             <Field.Root>
-              <Checkbox.Root
-                checked={petFriendly ?? false}
-                onCheckedChange={({ checked }) =>
-                  setValue("pet_friendly", checked === true, {
-                    shouldValidate: true,
-                  })
-                }
-              >
+              <Checkbox.Root>
                 {/* 실제 HTML 역할을 하는 컴포넌트: <input type="checkbox">의 역할을 함 */}
                 {/* React Hook Form은 HTML <input>에 직접 ref, onChange, name 등을 검 */}
-                <Checkbox.HiddenInput name="pet_friendly" />
+                <Checkbox.HiddenInput
+                  {...register("pet_friendly")}
+                  value={"true"}
+                />
                 <Checkbox.Control />
                 <Checkbox.Label>Pet friendly?</Checkbox.Label>
               </Checkbox.Root>
