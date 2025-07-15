@@ -1,7 +1,8 @@
 import { Box, Button, HStack, Image, Text, VStack } from "@chakra-ui/react";
-import { FaRegHeart, FaStar } from "react-icons/fa";
+import { FaCamera, FaRegHeart, FaStar } from "react-icons/fa";
 import { useColorModeValue } from "./ui/color-mode";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import type React from "react";
 
 interface IRoomProps {
   imageUrl: string;
@@ -11,6 +12,7 @@ interface IRoomProps {
   country: string;
   price: number;
   pk: number;
+  isOwner: boolean;
 }
 
 export default function Room({
@@ -21,8 +23,16 @@ export default function Room({
   country,
   price,
   pk,
+  isOwner,
 }: IRoomProps) {
   const gray = useColorModeValue("gray.600", "gray.400");
+  const navigate = useNavigate();
+  const onCameraClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+    // Link 안에 있기 때문에 버튼을 클릭하는 경우 Link를 우선 작동시키게 됨. 이것을 막기 위해 preventDefault() 설정
+    // 즉, 클릭이 링크로 전파되는 것을 막아주게 됨
+    event.preventDefault();
+    navigate(`/rooms/${pk}/photos`);
+  };
   return (
     <Link to={`rooms/${pk}`}>
       <VStack gap={0} alignItems={"flex-start"} w={"100%"} maxW={"300px"}>
@@ -66,8 +76,13 @@ export default function Room({
             top={2}
             right={0}
             color={"white"}
+            onClick={onCameraClick}
           >
-            <FaRegHeart />
+            {isOwner ? (
+              <FaCamera size={"20px"} />
+            ) : (
+              <FaRegHeart size={"20px"} />
+            )}
           </Button>
         </Box>
         <Box w={"100%"}>
