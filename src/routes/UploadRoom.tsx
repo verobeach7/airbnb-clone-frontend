@@ -11,6 +11,7 @@ import {
   Input,
   InputGroup,
   NativeSelect,
+  Stack,
   Text,
   Textarea,
   VStack,
@@ -19,7 +20,7 @@ import useHostOnlyPage from "../components/HostOnlyPage";
 import ProtectedPage from "../components/ProtectedPage";
 import { FaBed, FaDollarSign, FaToilet } from "react-icons/fa";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { IAmenity, ICategory } from "../types";
+import type { IAmenity, ICategory, IRoomDetail } from "../types";
 import {
   getAmenities,
   getCategories,
@@ -28,20 +29,26 @@ import {
 } from "../api";
 import { useForm } from "react-hook-form";
 import { toaster } from "../components/ui/toaster";
+import { useNavigate } from "react-router-dom";
 
 export default function UploadRoom() {
   // 제너릭을 설정하여 Form의 형태를 TypeScript에게 알려줘야 함
   // TypeScript에게 form의 형태를 알려줘야 register를 사용하는게 훨씬 쉬워짐
-  const { register, handleSubmit /* , watch*/ } =
-    useForm<IUploadRoomVariables>();
+  const { register, handleSubmit, watch, setValue } =
+    useForm<IUploadRoomVariables>({ defaultValues: { pet_friendly: false } });
+  const petFriendly = watch("pet_friendly");
+
+  const navigate = useNavigate();
 
   const mutation = useMutation({
     mutationFn: uploadRoom,
-    onSuccess: () => {
+    // 백엔드에서 방을 성공적으로 생성하면 그 방을 반환해줌. 반환된 방은 data로 받아 줄 수 있음
+    onSuccess: (data: IRoomDetail) => {
       toaster.create({
         type: "success",
         title: "Room created",
       });
+      navigate(`/rooms/${data.id}`);
     },
   });
 
@@ -60,11 +67,12 @@ export default function UploadRoom() {
   // 방법2: <ProtectedPage>처럼 컴포넌트로 만들어 하위에 children 컴포넌트를 두어 사용하는 방식
   // 방법1은 UploadRoom 전체를 허용할지 말지, 방법2는 전체에 대해서 또는 일부 컴포넌트에 대해서도 허용 여부를 선택할 수 있음
   useHostOnlyPage();
-  // console.log(watch());
+  console.log(watch());
   // // 하나의 필드만 선택하여 볼 수도 있음
   // console.log(watch("address"));
 
   const onSubmit = (data: IUploadRoomVariables) => {
+    // console.log(data);
     mutation.mutate(data);
   };
 
@@ -172,24 +180,31 @@ export default function UploadRoom() {
               <Field.Label>Description</Field.Label>
               <Textarea {...register("description", { required: true })} />
             </Field.Root>
+            {/* Root는 상태를 제어하는 컴포넌트 */}
+
             <Field.Root>
-              {/* Root는 상태를 제어하는 컴포넌트 */}
-              <Checkbox.Root>
+              <Checkbox.Root
+                checked={petFriendly ?? false}
+                onCheckedChange={({ checked }) =>
+                  setValue("pet_friendly", checked === true, {
+                    shouldValidate: true,
+                  })
+                }
+              >
                 {/* 실제 HTML 역할을 하는 컴포넌트: <input type="checkbox">의 역할을 함 */}
                 {/* React Hook Form은 HTML <input>에 직접 ref, onChange, name 등을 검 */}
-                <Checkbox.HiddenInput
-                  {...register("pet_friendly", { required: true })}
-                />
+                <Checkbox.HiddenInput name="pet_friendly" />
                 <Checkbox.Control />
                 <Checkbox.Label>Pet friendly?</Checkbox.Label>
               </Checkbox.Root>
             </Field.Root>
+
             <Field.Root>
               <Field.Label>Kind of room</Field.Label>
               <NativeSelect.Root>
                 <NativeSelect.Field
                   {...register("kind", { required: true })}
-                  placeholder="Select a kind"
+                  placeholder="Choose a kind"
                 >
                   <option value="entire_place">Entire Place</option>
                   <option value="private_room">Private Room</option>
@@ -206,7 +221,7 @@ export default function UploadRoom() {
               <NativeSelect.Root>
                 <NativeSelect.Field
                   {...register("category", { required: true })}
-                  placeholder="Select a kind"
+                  placeholder="Choose a category"
                 >
                   {categories?.map((category) => (
                     <option key={category.pk} value={category.pk}>
@@ -227,18 +242,23 @@ export default function UploadRoom() {
                   <Grid templateColumns={"1fr 1fr"} gap={5}>
                     {amenities?.map((amenity) => (
                       <Box key={amenity.pk}>
-                        <Checkbox.Root value={amenity.pk.toString()}>
+                        <Checkbox.Root
+                          value={amenity.pk.toString()}
+                          alignItems={"flex-start"}
+                        >
                           {/* amenities의 경우 여러 개 선택이 가능하므로 value를 이용하여 구분해줘야 함 */}
                           <Checkbox.HiddenInput
                             value={amenity.pk}
                             {...register("amenities", { required: true })}
                           />
                           <Checkbox.Control />
-                          <Checkbox.Label>{amenity.name}</Checkbox.Label>
+                          <Stack gap="1">
+                            <Checkbox.Label>{amenity.name}</Checkbox.Label>
+                            <Box textStyle={"sm"} color={"fg.muted"}>
+                              {amenity.description}
+                            </Box>
+                          </Stack>
                         </Checkbox.Root>
-                        <Fieldset.HelperText>
-                          {amenity.description}
-                        </Fieldset.HelperText>
                       </Box>
                     ))}
                   </Grid>

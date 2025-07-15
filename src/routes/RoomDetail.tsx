@@ -57,14 +57,16 @@ export default function RoomDetail() {
             key={index}
           >
             <Skeleton loading={isLoading} w={"100%"} h={"100%"}>
-              <Image
-                objectFit={"cover"}
-                w={"100%"}
-                h={"100%"}
-                // 사진이 5개 미만인 경우 photos[index]가 존재하지 않는 것이 있어 에러 발생
-                // `?`를 이용하면 있는 경우에만 file을 가져옴
-                src={data?.photos[index]?.file}
-              />
+              {data?.photos && data.photos.length > 0 ? (
+                <Image
+                  objectFit={"cover"}
+                  w={"100%"}
+                  h={"100%"}
+                  // 사진이 5개 미만인 경우 photos[index]가 존재하지 않는 것이 있어 에러 발생
+                  // `?`를 이용하면 있는 경우에만 file을 가져옴
+                  src={data?.photos[index]?.file}
+                />
+              ) : null}
             </Skeleton>
           </GridItem>
         ))}

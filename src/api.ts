@@ -152,4 +152,5 @@ export const uploadRoom = (variables: IUploadRoomVariables) =>
         },
       }
     )
+    // Django(Backend)에서 방을 성공적으로 생성하고 나면 그 방을 프론트엔드로 반환해줌
     .then((response) => response.data);
