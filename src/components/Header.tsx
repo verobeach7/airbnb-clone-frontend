@@ -90,7 +90,9 @@ export default function Header() {
     >
       <Box color={logoColor}>
         {/* 만약 FaAirbnb에서 color 속성을 변경하려고 하면 red.500같은 자동완성이 지원되지 않음. 대신 Chakra UI의 Box 컴포넌트로 감싸고 여기에 Chakra의 자동완성을 사용하면 Child Component에 상속되어짐 */}
-        <FaAirbnb size={"48"} />
+        <Link to={"/"}>
+          <FaAirbnb size={"48"} />
+        </Link>
       </Box>
       {/* spacing이 v3에서는 gap으로 변경됨 */}
       <HStack gap={2}>
