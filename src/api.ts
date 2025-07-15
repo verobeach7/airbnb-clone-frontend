@@ -164,3 +164,27 @@ export const getUploadURL = () =>
       },
     })
     .then((response) => response.data);
+
+export interface IUploadImageVarialbes {
+  file: FileList;
+  uploadURL: string;
+}
+
+// Cloudflare에 실제 이미지를 uploadURL을 사용하여 탑재하는 데 사용
+export const uploadImage = ({ file, uploadURL }: IUploadImageVarialbes) => {
+  // new FormData()는 html form을 생성해줌: JavaScript를 사용하여 form을 생성
+  const form = new FormData();
+  form.append("file", file[0]);
+  // 위에서 생성해 놓은 axios instance는 http://127.0.0.1:8000/api/v1/으로 가는데 여기서는 Cloudflare의 one-time upload url을 사용해야 함
+  return (
+    axios
+      // data는 form을 넣어주면 됨
+      .post(uploadURL, form, {
+        headers: {
+          // cloudflare에게 파일을 업로드한다고 알려주는 것
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => response.data)
+  );
+};

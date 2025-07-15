@@ -12,28 +12,43 @@ import { useParams } from "react-router-dom";
 import useHostOnlyPage from "../components/HostOnlyPage";
 import ProtectedPage from "../components/ProtectedPage";
 import { useMutation } from "@tanstack/react-query";
-import { getUploadURL } from "../api";
+import { getUploadURL, uploadImage } from "../api";
 
 interface IForm {
   file: FileList;
 }
 
+interface IUploadURLResponse {
+  id: string;
+  uploadURL: string;
+}
+
 export default function UploadPhotos() {
-  const { register, handleSubmit } = useForm<IForm>();
-  const mutation = useMutation({
-    mutationFn: getUploadURL,
-    onSuccess: (data) => {
+  const { register, handleSubmit, watch } = useForm<IForm>();
+  const { roomPk } = useParams();
+  const uploadImageMutation = useMutation({
+    mutationFn: uploadImage,
+    onSuccess: (data: any) => {
       console.log(data);
+    },
+  });
+  const uploadURLMutation = useMutation({
+    mutationFn: getUploadURL,
+    onSuccess: (data: IUploadURLResponse) => {
       // 반환받은 uploadURL에 이미지를 실제로 올려주는 작업을 해주면 됨
+      uploadImageMutation.mutate({
+        // cloudflare로부터 받아온 uploadURL과 register를 이용해 받은 file을 넘겨줘야 함
+        uploadURL: data.uploadURL,
+        file: watch("file"),
+      });
     },
   });
   // useParams() 훅을 이용해 URL에서 pk를 받음
-  const { roomPk } = useParams();
   useHostOnlyPage(); // host 권한이 있는 사람만 접근 가능
 
   // Form이 전송되면 api.ts를 이용하여 POST request를 /medias/photos/get-url로 보내게 됨
-  const onSubmit = (data: any) => {
-    mutation.mutate();
+  const onSubmit = () => {
+    uploadURLMutation.mutate();
   };
 
   return (
