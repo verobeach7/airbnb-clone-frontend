@@ -1,4 +1,4 @@
-import { Grid } from "@chakra-ui/react";
+import { Box, Grid } from "@chakra-ui/react";
 import Room from "../components/Room";
 import RoomSkeleton from "../components/RoomSkeleton";
 import { useQuery } from "@tanstack/react-query";
@@ -17,17 +17,21 @@ export default function Home() {
   // columnGap의 단위는 rem
   return (
     <Grid
-      columnGap={4}
-      rowGap={8}
+      columnGap={5}
+      rowGap={10}
       mt={10}
       px={10}
+      maxW="1920px"
+      mx={"auto"}
+      // templateColumns="repeat(auto-fit, minmax(300px, 1fr))"
+      placeItems={"center"}
       templateColumns={{
-        sm: "1fr",
-        md: "1fr 1fr",
-        lg: "repeat(3, 1fr)",
-        xl: "repeat(4, 1fr)",
+        sm: "1fr 1fr",
+        md: "repeat(4, 1fr)",
+        lg: "repeat(5, 1fr)",
+        xl: "repeat(6, 1fr)",
         // 숫자가 포함될 때는 "" 필요
-        "2xl": "repeat(5, 1fr)",
+        "2xl": "repeat(7, 1fr)",
       }}
     >
       {isLoading ? (
@@ -51,16 +55,19 @@ export default function Home() {
       ) : null}
       {/* `?`를 붙이면 데이터가 있으면이라고 가정하게 됨 */}
       {data?.map((room) => (
-        <Room
-          key={room.pk}
-          pk={room.pk}
-          imageUrl={room.photos[0]?.file}
-          name={room.name}
-          rating={room.rating}
-          city={room.city}
-          country={room.country}
-          price={room.price}
-        />
+        <Box w={"100%"} maxW={"300px"}>
+          {/* <Box w={"100%"}> */}
+          <Room
+            key={room.pk}
+            pk={room.pk}
+            imageUrl={room.photos[0]?.file}
+            name={room.name}
+            rating={room.rating}
+            city={room.city}
+            country={room.country}
+            price={room.price}
+          />
+        </Box>
       ))}
     </Grid>
   );
