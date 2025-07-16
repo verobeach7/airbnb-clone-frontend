@@ -188,3 +188,28 @@ export const uploadImage = ({ file, uploadURL }: IUploadImageVarialbes) => {
       .then((response) => response.data)
   );
 };
+
+export interface ICreatePhotoVariables {
+  description: string;
+  file: string;
+  roomPk: string;
+}
+
+// 장고 DB에 사진 경로 저장
+export const createPhoto = ({
+  description,
+  file,
+  roomPk,
+}: ICreatePhotoVariables) =>
+  instance
+    .post(
+      `rooms/${roomPk}/photos`, // 장고의 RoomPhotos 경로
+      { description, file }, // 보낼 데이터
+      {
+        headers: {
+          // CSRFToken은 허용된 사이트에서만 POST 요청을 보낼 수 있도록 해줌
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);
