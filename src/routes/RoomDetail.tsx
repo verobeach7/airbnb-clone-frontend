@@ -17,6 +17,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { useState } from "react";
+
+type ValuePiece = Date | null;
+
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -33,6 +40,12 @@ export default function RoomDetail() {
   });
   // ReactQueryDevtools 사용으로 더이상 Query로 받아온 데이터를 console.log()로 확인할 필요 없음.
   // console.log(data);
+
+  const [dates, setDates] = useState<Value>();
+  console.log(dates);
+  // 0: Thu Jul 17 2025 00:00:00 GMT+0900 (한국 표준시)
+  // 1: Sat Jul 19 2025 23:59:59 GMT+0900 (한국 표준시)
+
   return (
     <Box mt={6} px={60}>
       <Skeleton height={"30px"} width={"25%"} loading={isLoading}>
@@ -96,54 +109,67 @@ export default function RoomDetail() {
           <Avatar.Image src={data?.owner.avatar} />
         </Avatar.Root>
       </HStack>
-      <Box mt={10}>
-        <Skeleton w={"50%"} loading={isReviewsLoading}>
-          <Heading mb={5} fontSize={"2xl"}>
-            <HStack fontSize={"2xl"}>
-              <FaStar />
-              <Text>{data?.rating}</Text>
-              <Text>•</Text>
-              <Text>
-                {reviewsData?.length} review
-                {reviewsData?.length === 1 ? "" : "s"}
-              </Text>
-            </HStack>
-          </Heading>
-        </Skeleton>
-        {/* Container에 넣으면 기본으로 중앙 정렬됨 */}
-        <Container mt={8} maxW={"5xl"} marginX={"unset"}>
-          <Grid gap={8} templateColumns={"1fr 1fr"}>
-            {reviewsData?.map((review, index) => (
-              <VStack alignItems={"flex-start"} key={index}>
-                <HStack>
-                  <SkeletonCircle loading={isReviewsLoading}>
-                    <Avatar.Root size={"md"}>
-                      <Avatar.Fallback name={review.user.name} />
-                      <Avatar.Image src={review.user.avatar} />
-                    </Avatar.Root>
-                  </SkeletonCircle>
-                  <VStack gap={0} alignItems={"flex-start"}>
-                    <Skeleton loading={isReviewsLoading}>
-                      <Box>
-                        <Heading fontSize={"md"}>{review.user.name}</Heading>
-                      </Box>
-                    </Skeleton>
-                    <Skeleton loading={isReviewsLoading}>
-                      <HStack>
-                        <FaStar size={"12px"} />
-                        <Text>{review.rating}</Text>
-                      </HStack>
-                    </Skeleton>
-                  </VStack>
-                </HStack>
-                <Skeleton h={4} loading={isReviewsLoading}>
-                  <Text>{review.payload}</Text>
-                </Skeleton>
-              </VStack>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
+      <Grid gap={10} templateColumns={"2fr 1fr"}>
+        <Box mt={10}>
+          <Skeleton w={"50%"} loading={isReviewsLoading}>
+            <Heading mb={5} fontSize={"2xl"}>
+              <HStack fontSize={"2xl"}>
+                <FaStar />
+                <Text>{data?.rating}</Text>
+                <Text>•</Text>
+                <Text>
+                  {reviewsData?.length} review
+                  {reviewsData?.length === 1 ? "" : "s"}
+                </Text>
+              </HStack>
+            </Heading>
+          </Skeleton>
+          {/* Container에 넣으면 기본으로 중앙 정렬됨 */}
+          <Container mt={8} maxW={"5xl"} marginX={"unset"}>
+            <Grid gap={8} templateColumns={"1fr 1fr"}>
+              {reviewsData?.map((review, index) => (
+                <VStack alignItems={"flex-start"} key={index}>
+                  <HStack>
+                    <SkeletonCircle loading={isReviewsLoading}>
+                      <Avatar.Root size={"md"}>
+                        <Avatar.Fallback name={review.user.name} />
+                        <Avatar.Image src={review.user.avatar} />
+                      </Avatar.Root>
+                    </SkeletonCircle>
+                    <VStack gap={0} alignItems={"flex-start"}>
+                      <Skeleton loading={isReviewsLoading}>
+                        <Box>
+                          <Heading fontSize={"md"}>{review.user.name}</Heading>
+                        </Box>
+                      </Skeleton>
+                      <Skeleton loading={isReviewsLoading}>
+                        <HStack>
+                          <FaStar size={"12px"} />
+                          <Text>{review.rating}</Text>
+                        </HStack>
+                      </Skeleton>
+                    </VStack>
+                  </HStack>
+                  <Skeleton h={4} loading={isReviewsLoading}>
+                    <Text>{review.payload}</Text>
+                  </Skeleton>
+                </VStack>
+              ))}
+            </Grid>
+          </Container>
+        </Box>
+        <Box>
+          <Calendar
+            onChange={setDates}
+            prev2Label={null} // 연도 뒤로 넘기기 버튼(<<) 없애기
+            next2Label={null} // 연도 앞으로 넘기기 버튼(>>) 없애기
+            minDate={new Date()} // 오늘 이전으로 갈 수 없음
+            maxDate={new Date(Date.now() + 60 * 60 * 24 * 7 * 4 * 6 * 1000)} // 6개월 이후로 갈 수 없음
+            minDetail="month"
+            selectRange
+          />
+        </Box>
+      </Grid>
     </Box>
   );
 }
