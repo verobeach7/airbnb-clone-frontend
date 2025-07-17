@@ -19,7 +19,7 @@ import {
 import { FaStar } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ValuePiece = Date | null;
 
@@ -42,9 +42,23 @@ export default function RoomDetail() {
   // console.log(data);
 
   const [dates, setDates] = useState<Value>();
-  console.log(dates);
+  // console.log(dates);
   // 0: Thu Jul 17 2025 00:00:00 GMT+0900 (한국 표준시)
   // 1: Sat Jul 19 2025 23:59:59 GMT+0900 (한국 표준시)
+
+  useEffect(() => {
+    // if로 두 개의 Date가 존재하는 것을 확인하지 않으면 Undefined인 경우가 있기 때문에 타입스크립트 에러가 발생함
+    // 두 개의 Date가 모두 존재할 때만 실행하게 함으로써 에러를 피할 수 있음
+    if (Array.isArray(dates) && dates[0] && dates[1]) {
+      const [firstDate, secondDate] = dates;
+      // date.toJson(): '2025-07-17T03:22:20.086Z'
+      // date.toJson().split("T"): ['2025-07-17', '03:22:20.086Z']
+      // [checkIn]: 배열에 넣어 줌으로써 구조 분할하여 배열의 첫 번째 아이템만 가져오게 됨
+      const [checkIn] = firstDate.toJSON().split("T");
+      const [checkOut] = secondDate.toJSON().split("T");
+      console.log(checkIn, checkOut);
+    }
+  }, [dates]);
 
   return (
     <Box mt={6} px={60}>
