@@ -3,6 +3,7 @@ import type { QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
 import type { ISignUpVariables, IUsernameLoginVariables } from "./types";
 import type { Value } from "./routes/RoomDetail";
+import { formatDate } from "./lib/utils";
 
 // Axios의 instance 생성 기능을 이용해 편리하게 이용할 수 있으며 오타로 인한 에러 발생 가능성도 줄여줌
 const instance = axios.create({
@@ -234,8 +235,8 @@ export const checkBooking = ({
   // if로 해결
   if (dates) {
     const [firstDate, secondDate] = dates as [Date, Date];
-    const [checkIn] = firstDate.toJSON().split("T");
-    const [checkOut] = secondDate.toJSON().split("T");
+    const checkIn = formatDate(firstDate);
+    const checkOut = formatDate(secondDate);
     return instance
       .get(
         `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
