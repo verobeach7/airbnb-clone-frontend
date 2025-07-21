@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { getRoom, getRoomReviews } from "../api";
+import { checkBooking, getRoom, getRoomReviews } from "../api";
 import type { IReview, IRoomDetail } from "../types";
 import {
   Avatar,
   Box,
+  Button,
   Container,
   Grid,
   GridItem,
@@ -19,11 +20,11 @@ import {
 import { FaStar } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type ValuePiece = Date | null;
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+export type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -46,19 +47,29 @@ export default function RoomDetail() {
   // 0: Thu Jul 17 2025 00:00:00 GMT+0900 (한국 표준시)
   // 1: Sat Jul 19 2025 23:59:59 GMT+0900 (한국 표준시)
 
-  useEffect(() => {
-    // if로 두 개의 Date가 존재하는 것을 확인하지 않으면 Undefined인 경우가 있기 때문에 타입스크립트 에러가 발생함
-    // 두 개의 Date가 모두 존재할 때만 실행하게 함으로써 에러를 피할 수 있음
-    if (Array.isArray(dates) && dates[0] && dates[1]) {
-      const [firstDate, secondDate] = dates;
-      // date.toJson(): '2025-07-17T03:22:20.086Z'
-      // date.toJson().split("T"): ['2025-07-17', '03:22:20.086Z']
-      // [checkIn]: 배열에 넣어 줌으로써 구조 분할하여 배열의 첫 번째 아이템만 가져오게 됨
-      const [checkIn] = firstDate.toJSON().split("T");
-      const [checkOut] = secondDate.toJSON().split("T");
-      console.log(checkIn, checkOut);
-    }
-  }, [dates]);
+  // dates를 queryKey에 넣어줬기 때문에 State에 있는 dates가 바뀔 때마다 queryFn을 실행함
+  const { data: checkBookingData, isLoading: isCheckBooking } = useQuery({
+    queryKey: ["check", roomPk, dates],
+    queryFn: checkBooking,
+    enabled: dates !== undefined,
+    gcTime: 0, // 캐시를 사용하지 않고 매번 새롭게 갱신함
+  });
+  console.log(checkBookingData, isCheckBooking);
+
+  // dates가 변할 때마다 useQuery의 queryFn이 실행되므로 더이상 useEffect를 사용할 필요 없음!!!
+  // useEffect(() => {
+  //   // if로 두 개의 Date가 존재하는 것을 확인하지 않으면 Undefined인 경우가 있기 때문에 타입스크립트 에러가 발생함
+  //   // 두 개의 Date가 모두 존재할 때만 실행하게 함으로써 에러를 피할 수 있음
+  //   if (Array.isArray(dates) && dates[0] && dates[1]) {
+  //     const [firstDate, secondDate] = dates;
+  //     // date.toJson(): '2025-07-17T03:22:20.086Z'
+  //     // date.toJson().split("T"): ['2025-07-17', '03:22:20.086Z']
+  //     // [checkIn]: 배열에 넣어 줌으로써 구조 분할하여 배열의 첫 번째 아이템만 가져오게 됨
+  //     const [checkIn] = firstDate.toJSON().split("T");
+  //     const [checkOut] = secondDate.toJSON().split("T");
+  //     console.log(checkIn, checkOut);
+  //   }
+  // }, [dates]);
 
   return (
     <Box mt={6} px={60}>
@@ -182,6 +193,18 @@ export default function RoomDetail() {
             minDetail="month"
             selectRange
           />
+          <Button
+            disabled={!checkBookingData?.ok}
+            loading={isCheckBooking}
+            mt={5}
+            w={"100%"}
+            colorPalette={"red"}
+          >
+            Make Booking
+          </Button>
+          {Array.isArray(dates) && !isCheckBooking && !checkBookingData?.ok ? (
+            <Text color={"red.500"}>Can't book on those dates, sorry</Text>
+          ) : null}
         </Box>
       </Grid>
     </Box>

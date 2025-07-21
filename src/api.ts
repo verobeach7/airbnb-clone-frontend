@@ -2,6 +2,7 @@ import Cookie from "js-cookie";
 import type { QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
 import type { ISignUpVariables, IUsernameLoginVariables } from "./types";
+import type { Value } from "./routes/RoomDetail";
 
 // Axios의 instance 생성 기능을 이용해 편리하게 이용할 수 있으며 오타로 인한 에러 발생 가능성도 줄여줌
 const instance = axios.create({
@@ -213,3 +214,35 @@ export const createPhoto = ({
       }
     )
     .then((response) => response.data);
+
+// undefined일 수 있을 때 ? 사용
+export type CheckBookingQueryKey = [string, string?, Value?];
+
+// QueryFunctionContext의 타입을 generic으로 넣어주기
+export const checkBooking = ({
+  queryKey,
+}: QueryFunctionContext<CheckBookingQueryKey>) => {
+  const [, roomPk, dates] = queryKey;
+  // 타입스크립트가 queryKey가 무엇인지 모르기 때문에 에러가 발생
+  // TS에러 해결 방법1.
+  // 아래처럼 타입 단언을 해 주거나 if(Array.isArray(dates))를 사용하여 확인해주어야 함
+  // const [firstDate, secondDate] = dates as [Date, Date];
+  // TS에러 해결 방법2. 추천!!!
+  // queryKey가 어떤 타입인지 설명
+  // generic으로 type을 넣어줘도 여전히 에러가 발생: undefined일 때가 있기 때문
+  // 페이지가 로드되고 사용자가 어떤 날짜도 선택하지 않았을 때는 분명 undefined이기 때문
+  // if로 해결
+  if (dates) {
+    const [firstDate, secondDate] = dates as [Date, Date];
+    const [checkIn] = firstDate.toJSON().split("T");
+    const [checkOut] = secondDate.toJSON().split("T");
+    return instance
+      .get(
+        `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
+      )
+      .then((response) => response.data);
+  }
+  // 그렇다면 dates가 undefined일 때는 어떻게 RoomDetail.tsx에서 useQuery 실행을 막을 것인가???
+  // 페이지가 로드된 순간에 useQuery 동작을 방지하는 방법
+  // useQuery에 설정(configuration)을 위한 Object를 만들어 enabled를 false로 설정해주면 됨
+};
