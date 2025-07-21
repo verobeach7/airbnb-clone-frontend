@@ -22,6 +22,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
+import "../calendar.css";
 
 type ValuePiece = Date | null;
 
@@ -206,9 +207,13 @@ export default function RoomDetail() {
           >
             Make Booking
           </Button>
-          {Array.isArray(dates) && !isCheckBooking && !checkBookingData?.ok ? (
-            <Text color={"red.500"}>Can't book on those dates, sorry</Text>
-          ) : null}
+          <Box>
+            {Array.isArray(dates) &&
+            !isCheckBooking &&
+            !checkBookingData?.ok ? (
+              <Text color={"red.500"}>Can't book on those dates, sorry</Text>
+            ) : null}
+          </Box>
         </Box>
       </Grid>
     </Box>
