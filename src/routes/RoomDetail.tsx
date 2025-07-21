@@ -21,6 +21,7 @@ import { FaStar } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 
 type ValuePiece = Date | null;
 
@@ -73,6 +74,9 @@ export default function RoomDetail() {
 
   return (
     <Box mt={6} px={60}>
+      <Helmet>
+        <title>{data ? data.name : "Loading..."}</title>
+      </Helmet>
       <Skeleton height={"30px"} width={"25%"} loading={isLoading}>
         <Heading>{data?.name}</Heading>
       </Skeleton>
