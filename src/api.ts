@@ -247,3 +247,36 @@ export const checkBooking = ({
   // 페이지가 로드된 순간에 useQuery 동작을 방지하는 방법
   // useQuery에 설정(configuration)을 위한 Object를 만들어 enabled를 false로 설정해주면 됨
 };
+
+export interface IRoomBookingVariables {
+  check_in: string;
+  check_out: string;
+  roomPk: string;
+  guests: number;
+}
+
+export interface IRoomBookingSuccess {
+  check_in: string;
+  check_out: string;
+}
+
+export type roomBookingErrMsgType = {
+  [key: string]: string[];
+};
+
+export interface IRoomBookingError {
+  response: {
+    data: roomBookingErrMsgType;
+    status: number;
+    statusText: string;
+  };
+}
+
+export const roomBooking = (variables: IRoomBookingVariables) =>
+  instance
+    .post(`rooms/${variables.roomPk}/bookings`, variables, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);

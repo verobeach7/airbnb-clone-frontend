@@ -1,28 +1,42 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { checkBooking, getRoom, getRoomReviews } from "../api";
+import {
+  checkBooking,
+  getRoom,
+  getRoomReviews,
+  roomBooking,
+  type IRoomBookingError,
+  type IRoomBookingSuccess,
+  type IRoomBookingVariables,
+} from "../api";
 import type { IReview, IRoomDetail } from "../types";
 import {
   Avatar,
   Box,
   Button,
   Container,
+  Field,
   Grid,
   GridItem,
   Heading,
   HStack,
   Image,
+  InputGroup,
+  NumberInput,
   Skeleton,
   SkeletonCircle,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaUserFriends } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import "../calendar.css";
+import { useForm } from "react-hook-form";
+import { formatDate } from "../lib/utils";
+import { toaster } from "../components/ui/toaster";
 
 type ValuePiece = Date | null;
 
@@ -72,6 +86,44 @@ export default function RoomDetail() {
   //     console.log(checkIn, checkOut);
   //   }
   // }, [dates]);
+
+  const { register, handleSubmit } = useForm<IRoomBookingVariables>();
+
+  const roomBookingMutation = useMutation<
+    IRoomBookingSuccess,
+    IRoomBookingError,
+    IRoomBookingVariables
+  >({
+    mutationFn: roomBooking,
+    onSuccess: (data) => {
+      toaster.create({
+        title: "Booking completed!",
+        description: `Booked from ${data.check_in} to ${data.check_out}`,
+        type: "success",
+        closable: true,
+        duration: 10000,
+      });
+    },
+    onError: () => {
+      toaster.create({
+        title: "Something wrong!",
+        description: "Try again",
+        type: "error",
+      });
+    },
+  });
+
+  const makeBooking = (data: IRoomBookingVariables) => {
+    if (dates && roomPk) {
+      const [firstDate, secondDate] = dates as [Date, Date];
+      const checkIn = formatDate(firstDate);
+      const checkOut = formatDate(secondDate);
+      data.check_in = checkIn;
+      data.check_out = checkOut;
+      data.roomPk = roomPk;
+      roomBookingMutation.mutate(data);
+    }
+  };
 
   return (
     <Box mt={6} px={60}>
@@ -188,7 +240,7 @@ export default function RoomDetail() {
             </Grid>
           </Container>
         </Box>
-        <Box>
+        <Box as={"form"} onSubmit={handleSubmit(makeBooking)}>
           <Calendar
             onChange={setDates}
             prev2Label={null} // 연도 뒤로 넘기기 버튼(<<) 없애기
@@ -198,9 +250,24 @@ export default function RoomDetail() {
             minDetail="month"
             selectRange
           />
+          <HStack w={"100%"} mt={5} mb={2}>
+            <Field.Root required>
+              <Field.Label>
+                Guests
+                <Field.RequiredIndicator />
+              </Field.Label>
+              <NumberInput.Root w={"100%"} defaultValue="1" min={1}>
+                <NumberInput.Control />
+                <InputGroup startAddon={<FaUserFriends />}>
+                  <NumberInput.Input {...register("guests")} />
+                </InputGroup>
+              </NumberInput.Root>
+            </Field.Root>
+          </HStack>
           <Button
+            type="submit"
             disabled={!checkBookingData?.ok}
-            loading={isCheckBooking}
+            loading={isCheckBooking && dates !== undefined}
             mt={5}
             w={"100%"}
             colorPalette={"red"}
