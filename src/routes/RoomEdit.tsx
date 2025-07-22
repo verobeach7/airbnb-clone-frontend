@@ -41,7 +41,7 @@ import { useEffect } from "react";
 
 export default function RoomEdit() {
   const { roomPk } = useParams();
-  const { register, handleSubmit, reset, control } =
+  const { register, handleSubmit, reset, control, watch } =
     useForm<IUpdateRoomVariables>();
 
   const navigate = useNavigate();
@@ -88,6 +88,8 @@ export default function RoomEdit() {
       });
     }
   }, [updateRoomData, reset]);
+
+  console.log("after", watch("amenities"));
 
   return (
     <ProtectedPage>
@@ -203,19 +205,18 @@ export default function RoomEdit() {
                   render={({ field }) => (
                     <Checkbox.Root
                       checked={field.value}
-                      onCheckedChange={(checked) => field.onChange(!!checked)}
+                      onCheckedChange={({ checked }) => {
+                        // checked는 true, false, "indeterminate"(중간상태)
+                        // field.onChange(!!checked); : "indeterminate"를 true로 간주
+                        field.onChange(checked === true);
+                      }}
                     >
-                      <Checkbox.HiddenInput {...register("pet_friendly")} />
+                      <Checkbox.HiddenInput />
                       <Checkbox.Control />
                       <Checkbox.Label>Pet friendly?</Checkbox.Label>
                     </Checkbox.Root>
                   )}
                 />
-                {/* <Checkbox.Root>
-                  <Checkbox.HiddenInput {...register("pet_friendly")} />
-                  <Checkbox.Control />
-                  <Checkbox.Label>Pet friendly?</Checkbox.Label>
-                </Checkbox.Root> */}
               </Field.Root>
               <Field.Root>
                 <Field.Label>Kind of room</Field.Label>
@@ -272,14 +273,26 @@ export default function RoomEdit() {
                         {amenitiesData?.map((amenity) => (
                           <Box key={amenity.pk}>
                             <Checkbox.Root
-                              value={amenity.pk.toString()}
+                              value={String(amenity.pk)}
                               alignItems={"flex-start"}
+                              checked={
+                                field.value?.includes(amenity.pk) ?? false
+                              }
+                              onCheckedChange={({ checked }) => {
+                                const current = field.value ?? [];
+                                console.log("before", current);
+                                if (checked === true) {
+                                  console.log("true", amenity.pk);
+                                  field.onChange([...current, amenity.pk]);
+                                } else {
+                                  console.log("false", amenity.pk);
+                                  field.onChange(
+                                    current.filter((id) => id !== amenity.pk)
+                                  );
+                                }
+                              }}
                             >
-                              {/* amenities의 경우 여러 개 선택이 가능하므로 value를 이용하여 구분해줘야 함 */}
-                              <Checkbox.HiddenInput
-                                value={amenity.pk}
-                                {...register("amenities", { required: true })}
-                              />
+                              <Checkbox.HiddenInput />
                               <Checkbox.Control />
                               <Stack gap="1">
                                 <Checkbox.Label>{amenity.name}</Checkbox.Label>
