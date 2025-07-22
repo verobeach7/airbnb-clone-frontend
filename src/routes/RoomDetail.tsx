@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   checkBooking,
   getRoom,
@@ -28,7 +28,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { FaStar, FaUserFriends } from "react-icons/fa";
+import { FaEdit, FaStar, FaUserFriends } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useState } from "react";
@@ -70,7 +70,7 @@ export default function RoomDetail() {
     enabled: dates !== undefined,
     gcTime: 0, // 캐시를 사용하지 않고 매번 새롭게 갱신함
   });
-  console.log(checkBookingData, isCheckBooking);
+  // console.log(checkBookingData, isCheckBooking);
 
   // dates가 변할 때마다 useQuery의 queryFn이 실행되므로 더이상 useEffect를 사용할 필요 없음!!!
   // useEffect(() => {
@@ -125,13 +125,24 @@ export default function RoomDetail() {
     }
   };
 
+  const navigate = useNavigate();
+  const onEditClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault(); // click이 링크로 전파되는것을 방지(버블링 방지)한다.
+    navigate(`/rooms/${data?.id}/edit`);
+  };
+
   return (
     <Box mt={6} px={60}>
       <Helmet>
         <title>{data ? data.name : "Loading..."}</title>
       </Helmet>
       <Skeleton height={"30px"} width={"25%"} loading={isLoading}>
-        <Heading>{data?.name}</Heading>
+        <HStack>
+          <Heading>{data?.name}</Heading>
+          <Button variant={"ghost"} onClick={onEditClick}>
+            {data?.is_owner ? <FaEdit size={25} /> : null}
+          </Button>
+        </HStack>
       </Skeleton>
       <Grid
         mt={6}
@@ -188,7 +199,9 @@ export default function RoomDetail() {
         </VStack>
         <Avatar.Root size={"2xl"}>
           <Avatar.Fallback name={data?.owner.name} />
-          <Avatar.Image src={data?.owner.avatar} />
+          {data?.owner.avatar ? (
+            <Avatar.Image src={data?.owner.avatar} />
+          ) : null}
         </Avatar.Root>
       </HStack>
       <Grid gap={10} templateColumns={"2fr 1fr"}>
@@ -215,7 +228,9 @@ export default function RoomDetail() {
                     <SkeletonCircle loading={isReviewsLoading}>
                       <Avatar.Root size={"md"}>
                         <Avatar.Fallback name={review.user.name} />
-                        <Avatar.Image src={review.user.avatar} />
+                        {review.user.avatar ? (
+                          <Avatar.Image src={review.user.avatar} />
+                        ) : null}
                       </Avatar.Root>
                     </SkeletonCircle>
                     <VStack gap={0} alignItems={"flex-start"}>

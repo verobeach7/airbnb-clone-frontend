@@ -55,7 +55,7 @@ export default function Home() {
       ) : null}
       {/* `?`를 붙이면 데이터가 있으면이라고 가정하게 됨 */}
       {data?.map((room) => (
-        <Box w={"100%"} maxW={"300px"}>
+        <Box key={room.pk} w={"100%"} maxW={"300px"}>
           {/* <Box w={"100%"}> */}
           <Room
             key={room.pk}

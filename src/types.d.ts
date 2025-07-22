@@ -50,6 +50,10 @@ export interface IRoomDetail extends IRoomList {
   amenities: IAmenity[];
 }
 
+export interface IUpdateRoomDetail extends IRoomDetail {
+  amenities: number[];
+}
+
 export interface IReview {
   payload: string;
   rating: number;
