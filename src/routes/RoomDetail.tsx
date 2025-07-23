@@ -139,9 +139,11 @@ export default function RoomDetail() {
       <Skeleton height={"30px"} width={"25%"} loading={isLoading}>
         <HStack>
           <Heading>{data?.name}</Heading>
-          <Button variant={"ghost"} onClick={onEditClick}>
-            {data?.is_owner ? <FaEdit size={25} /> : null}
-          </Button>
+          {data?.is_owner ? (
+            <Button variant={"ghost"} onClick={onEditClick}>
+              <FaEdit size={25} />
+            </Button>
+          ) : null}
         </HStack>
       </Skeleton>
       <Grid
