@@ -206,7 +206,7 @@ export default function RoomDetail() {
           ) : null}
         </Avatar.Root>
       </HStack>
-      <Grid gap={10} templateColumns={"2fr 1fr"}>
+      <Grid mb={20} gap={10} templateColumns={"2fr 1fr"}>
         <Box mt={10}>
           <Skeleton w={"50%"} loading={isReviewsLoading}>
             <Heading mb={5} fontSize={"2xl"}>
