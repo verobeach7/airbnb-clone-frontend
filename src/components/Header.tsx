@@ -150,8 +150,11 @@ export default function Header() {
                         <Menu.Item value="upload-room">Upload room</Menu.Item>
                       </Link>
                     ) : null}
+                    <Link to="my-bookings">
+                      <Menu.Item value="my-bookins">My bookings</Menu.Item>
+                    </Link>
                     <Menu.Item onClick={onLogOut} value="log-out">
-                      Log Out
+                      Log out
                     </Menu.Item>
                   </Menu.Content>
                 </Menu.Positioner>

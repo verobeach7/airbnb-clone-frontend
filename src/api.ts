@@ -305,3 +305,6 @@ export const updateRoom = (variables: IUpdateRoomVariables) =>
       },
     })
     .then((response) => response.data);
+
+export const getUserBookings = () =>
+  instance.get("users/bookings").then((response) => response.data);

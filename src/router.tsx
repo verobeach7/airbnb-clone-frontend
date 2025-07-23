@@ -8,6 +8,7 @@ import KakaoConfirm from "./routes/KakaoConfirm";
 import UploadRoom from "./routes/UploadRoom";
 import UploadPhotos from "./routes/UploadPhotos";
 import RoomEdit from "./routes/RoomEdit";
+import MyBookings from "./routes/MyBookings";
 
 // createBrowserRouter는 함수
 // 이 함수를 호출하여 이 안에 라우터 배열을 둠
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Home />,
+      },
+      {
+        path: "my-bookings",
+        element: <MyBookings />,
       },
       // "rooms/:roomPk"보다 위에다 두어 upload가 하나의 방(:roomPk)으로 인식하지 않도록 함
       {

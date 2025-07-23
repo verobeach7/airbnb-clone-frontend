@@ -99,3 +99,11 @@ export interface ISignUpVariables {
   name: string;
   email: string;
 }
+
+export interface IUserBookingList {
+  pk: number;
+  room: IRoomList;
+  check_in: string;
+  check_out: string;
+  guests: number;
+}
