@@ -9,6 +9,7 @@ import UploadRoom from "./routes/UploadRoom";
 import UploadPhotos from "./routes/UploadPhotos";
 import RoomEdit from "./routes/RoomEdit";
 import MyBookings from "./routes/MyBookings";
+import RoomBookings from "./routes/RoomBookings";
 
 // createBrowserRouter는 함수
 // 이 함수를 호출하여 이 안에 라우터 배열을 둠
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: "rooms/:roomPk/edit",
         element: <RoomEdit />,
+      },
+      {
+        path: "rooms/:roomPk/Bookings",
+        element: <RoomBookings />,
       },
       {
         path: "social",

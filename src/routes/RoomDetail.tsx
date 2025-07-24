@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   checkBooking,
   getRoom,
@@ -28,7 +28,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { FaEdit, FaStar, FaUserFriends } from "react-icons/fa";
+import { FaBookOpen, FaEdit, FaStar, FaUserFriends } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useState } from "react";
@@ -136,13 +136,20 @@ export default function RoomDetail() {
       <Helmet>
         <title>{data ? data.name : "Loading..."}</title>
       </Helmet>
-      <Skeleton height={"30px"} width={"25%"} loading={isLoading}>
-        <HStack>
+      <Skeleton height={"30px"} width={"100%"} loading={isLoading}>
+        <HStack w={"100%"} display={"flex"}>
           <Heading>{data?.name}</Heading>
           {data?.is_owner ? (
-            <Button variant={"ghost"} onClick={onEditClick}>
-              <FaEdit size={25} />
-            </Button>
+            <HStack gap={0}>
+              <Button w={"10px"} variant={"ghost"} onClick={onEditClick}>
+                <FaEdit />
+              </Button>
+              <Link to={`/rooms/${data?.id}/bookings`}>
+                <Button w={"10px"} variant={"ghost"}>
+                  <FaBookOpen />
+                </Button>
+              </Link>
+            </HStack>
           ) : null}
         </HStack>
       </Skeleton>

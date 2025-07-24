@@ -107,3 +107,11 @@ export interface IUserBookingList {
   check_out: string;
   guests: number;
 }
+
+export interface IRoomBookingList {
+  pk: number;
+  user: IRoomOwner;
+  check_in: string;
+  check_out: string;
+  guests: number;
+}
