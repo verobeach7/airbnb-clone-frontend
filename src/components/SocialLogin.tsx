@@ -3,12 +3,22 @@ import { FaComment, FaGithub } from "react-icons/fa";
 
 export default function SocialLogin() {
   // 전체 URL이 너무 길 때는 객체를 생성하여 활용하면 헷갈리지 않고 좋음
-  const kakaoParams = {
+  const kakaoDevelopmentParams = {
     client_id: "a4e1b24eef7b898ce0cb1c33edfa353f",
     redirect_uri: "http://127.0.0.1:5173/social/kakao",
     response_type: "code",
   };
-  const params = new URLSearchParams(kakaoParams).toString();
+  const kakaoProductionParams = {
+    client_id: "a4e1b24eef7b898ce0cb1c33edfa353f",
+    redirect_uri:
+      "https://airbnb-clone-frontend-v0pq.onrender.com/social/kakao",
+    response_type: "code",
+  };
+  const params = new URLSearchParams(
+    import.meta.env.MODE === "development"
+      ? kakaoDevelopmentParams
+      : kakaoProductionParams
+  ).toString();
   return (
     <Box>
       <HStack my={8}>
