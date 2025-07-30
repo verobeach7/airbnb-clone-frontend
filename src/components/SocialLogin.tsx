@@ -19,6 +19,7 @@ export default function SocialLogin() {
       ? kakaoDevelopmentParams
       : kakaoProductionParams
   ).toString();
+  console.log(import.meta.env.MODE);
   return (
     <Box>
       <HStack my={8}>
