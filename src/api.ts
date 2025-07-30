@@ -7,7 +7,11 @@ import { formatDate } from "./lib/utils";
 
 // Axios의 instance 생성 기능을 이용해 편리하게 이용할 수 있으며 오타로 인한 에러 발생 가능성도 줄여줌
 const instance = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/v1/",
+  // 예전에는 process.env.NODE_ENV를 이용하여 development와 production을 구분했지만 이제는 import.meta.env.MODE를 사용
+  baseURL:
+    import.meta.env.MODE === "development"
+      ? "http://127.0.0.1:8000/api/v1/"
+      : "https://airbnbclone-hcic.onrender.com/api/v1/",
   // JavaScript는 Cookie를 자동으로 포함하여 보내지 않으므로 수동으로 설정해줘야 함
   withCredentials: true,
 });
