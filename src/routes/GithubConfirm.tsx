@@ -73,7 +73,9 @@ export default function GithubConfirm() {
     },
   });
   useEffect(() => {
+    console.log("useEffect");
     if (code) {
+      console.log("useEffect", code);
       mutation.mutate({ code });
     }
   }, []);
