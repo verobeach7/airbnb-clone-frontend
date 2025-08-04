@@ -10,8 +10,7 @@ export default function SocialLogin() {
   };
   const kakaoProductionParams = {
     client_id: "a4e1b24eef7b898ce0cb1c33edfa353f",
-    redirect_uri:
-      "https://airbnb-clone-frontend-v0pq.onrender.com/social/kakao",
+    redirect_uri: "https://production-test.xyz/social/kakao",
     response_type: "code",
   };
   const params = new URLSearchParams(
