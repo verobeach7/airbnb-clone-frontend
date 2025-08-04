@@ -11,7 +11,7 @@ const instance = axios.create({
   baseURL:
     import.meta.env.MODE === "development"
       ? "http://127.0.0.1:8000/api/v1/"
-      : "https://airbnbclone-hcic.onrender.com/api/v1/",
+      : "https://backend.production-test.xyz/api/v1/",
   // JavaScript는 Cookie를 자동으로 포함하여 보내지 않으므로 수동으로 설정해줘야 함
   withCredentials: true,
 });
@@ -50,14 +50,7 @@ export const getRoomReviews = ({ queryKey }: QueryFunctionContext) => {
 };
 
 export const getMe = () =>
-  instance
-    .get(`users/me`, {
-      headers: {
-        // Django로부터 받은 Cookie에 csrftoken이 없을 수도 있으므로 `|| ""` 설정
-        "X-CSRFToken": Cookie.get("csrftoken") || "",
-      },
-    })
-    .then((response) => response.data);
+  instance.get(`users/me`).then((response) => response.data);
 
 export const logOut = () =>
   instance
